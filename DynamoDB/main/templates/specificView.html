@@ -1,0 +1,53 @@
+<html>
+    <head>
+      <title>Movies in {{hashvalue}}</title>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />      
+    </head>
+    <body>
+       <div class="container">
+          <div class="row">
+             <div class="col-sm-12 col-md-6 offset-md-3">
+               <table class="table table-striped table-bordered">
+                  {% for value in result %}
+                  <tr>
+                     <td> {{ value }} </td>
+                  </tr>
+                  {% endfor %}
+               </table>
+               <div class="btn btn-grp">
+                  {% for i in range(1,length[0]+1) %}
+                  <a type="button" class="btn btn-lg bg-warning text-primary" onclick = "locationreload()" class="post-request" href="http://localhost:5000/dynamo/view/Movies">{{i}}</a>
+                  {% endfor %}
+               </div>
+               <p id="res"></p>
+             </div>
+          </div>
+       </div>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+      function grabLink(event) {
+       var page=$('.post-request').text()
+       document.innerHTML(page)
+       $.ajax({
+         url: event.target.href,
+         method: 'POST',
+         type:'POST',
+         contentType: 'application/json',
+         data: { "Hashname":"year","Hashvalue":"2013","projection":"title","page":2},
+         dataType: "jsonp",
+         success: function(result) {
+            locationreload
+           }
+           }); 
+        }
+        $(document).ready(function () {
+           $('.post-request').click(grabLink)
+        })
+        function locationreload() {
+            location.reload();  
+        }
+   </script>
+</html>

@@ -1,0 +1,104 @@
+Sign in
+{
+    "username":"CreDel01"
+    "password":"CreDel01"
+}
+
+Create Table JSON body
+
+{
+    "HashName":"year",
+    "HashType":"s",
+    "readcapacity":"5",
+    "writecapacity":"5",
+    "SortName":"title",
+    "SortType":"s"
+}
+
+Add items Json body
+
+[
+{
+    "year" : "2013",
+    "title" : "Turn It Down, Or Else!",
+    "info" : {
+        "directors" : [
+            "Alice Smith",
+            "Bob Jones"
+        ],
+        "release_date" : "2013-01-18T00:00:00Z",
+        "rating" : 6.2,
+        "genres" : [
+            "Comedy",
+            "Drama"
+        ],
+        "image_url" : "http://ia.media-imdb.com/images/N/O9ERWAU7FS797AJ7LU8HN09AMUP908RLlo5JF90EWR7LJKQ7@@._V1_SX400_.jpg",
+        "plot" : "A rock band plays their music at high volumes, annoying the neighbors.",
+        "rank" : 11,
+        "running_time_secs" : 5215,
+        "actors" : [
+            "David Matthewman",
+            "Ann Thomas",
+            "Jonathan G. Neff"
+       ]
+    }
+}
+]
+
+[
+{
+    "year" : "2014",
+    "title" : "ii",
+    "info" : {
+        "directors" : [
+            "Alice Smith",
+            "Bob Jones"
+        ],
+        "release_date" : "2013-01-18T00:00:00Z",
+        "rating" : 6.2
+    }
+}
+]
+
+View specific items Json body
+
+{
+    "Hashname":"year",
+    "Hashvalue":"2013",
+    "projection":"title",
+    "page":1
+}
+
+Update items JSON body
+
+{
+    "hashname":"year",
+    "hashvalue":"2014",
+    "sortname":"title",
+    "sortvalue":"aa",
+    "updatename":["info.rating","info.release_date"],
+    "updatevalue":[7,"2-01-2022"]
+}
+
+Delete items URL:
+
+http://localhost:5000/dynamo/deleteitem/movies?hashname=year&hashvalue=2014&sortname=title&sortvalue=aa
+
+Filter out record based on keys and other values:
+
+{
+    "filtername":["year","title","info.rating"],
+    "filtervalues":["2014","aa",7]
+}
+
+Scan out records based on non-key values:
+
+{
+    "filtername":["info.rating","info.directors"],
+    "filtervalues":[7,"Alice Smith"]
+}
+
+
+Docker image for dynamodb:
+
+docker run -itd -p 8000:8000  --name dev-db amazon/dynamodb-local:latest -jar DynamoDBLocal.jar -sharedDb

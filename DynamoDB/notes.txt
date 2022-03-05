@@ -1,0 +1,35 @@
+Can DynamoDB sort key be updated? 
+No. Similarly to the partition key, sort key cannot be changed after the table is provisioned.
+-------------------
+CODE Snippet:
+    resp=table.query(KeyConditionExpression=Key('info.directors').eq('Alice Smith'),Limit=10)
+OUTPUT:
+    botocore.exceptions.ClientError: An error occurred (ValidationException) when calling the Query operation: 
+    KeyConditionExpressions cannot have conditions on nested attributes
+-------------------
+You would often not be able to just insert a python dictionary to DynamoDB as-is. 
+You would have to take care of a few special values. For example, convert floats to Decimals:
+
+def dict_float_to_decimal(d: dict) -> dict:
+    """
+    boto3 python client for dynamodb supports only decimals (https://github.com/boto/boto3/issues/665), convert
+    """
+    for k, v in d.items():
+        if type(v) is float:
+            if math.isnan(v) or math.isinf(v):
+                v = 0
+            d[k] = Decimal(str(v))
+    return d
+-------------------
+https://aws.amazon.com/getting-started/projects/create-manage-nonrelational-database-dynamodb/4/#:~:text=Step%202.-,Creating%20a%20secondary%20index,indexes%20and%20local%20secondary%20indexes.
+-------------------
+URL:https://acloudguru.com/forums/aws-csa-pro-2019/use-nested-attributes-in-secondary-index-of-dynamodb
+You cannot (currently) create a secondary index off of a nested attribute.
+For each secondary index, you must specify the following:
+    The key schema for the index. Every attribute in the index key schema must be a 
+    top-level attribute of type String, Number, or Binary. Nested attributes and 
+    multi-valued sets are not allowed. 
+-------------------
+https://stackoverflow.com/questions/65695788/how-to-query-dynamodb-filtering-by-value-in-a-list
+-------------------
+https://andypi.co.uk/2015/11/27/multiple-user-roles-python-flask/
